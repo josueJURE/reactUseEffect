@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import 'dotenv/config';
+
 
 
 import "./App.css";
@@ -31,14 +31,20 @@ function GithubUser({ name, location, image }: GithubUserProps) {
 }
 
 function App() {
-  // const [data, setData] = useState(null);
   const [data, setData] = useState<GithubUserData | null>(null);
+  const [laoding, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState(null)
   useEffect(() => {
-    fetch(process.env.path!)
+    setLoading(true)
+    fetch("")
       .then((response) => response.json())
-      .then((data) => setData(data));
+      .then((data) => setData(data))
+      .then(() => setLoading(false))
+      .catch((data) => setError(data))
   }, []);
-  if (data)
+  if (laoding) return <h1>Data is loading</h1>
+  if(error) return <pre>{JSON.stringify(error)}</pre>
+  if (!data) return null
     return (
       <>
         <GithubUser name={data.name} location={data.bio} image={data.avatar_url} />
